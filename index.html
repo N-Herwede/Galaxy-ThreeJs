@@ -19,19 +19,12 @@
         </div>
     </header>
     <div id="controls">
-        <button id="btn-play" class="ctrl-btn active" title="Play/Pause">
-            <svg id="icon-pause" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
-            <svg id="icon-play" viewBox="0 0 24 24" style="display:none"><path d="M8 5v14l11-7z"/></svg>
-        </button>
+        <button id="btn-play" class="ctrl-btn active" title="Play/Pause"><svg id="icon-pause" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg><svg id="icon-play" viewBox="0 0 24 24" style="display:none"><path d="M8 5v14l11-7z"/></svg></button>
         <button id="btn-reset" class="ctrl-btn" title="Reset Camera"><svg viewBox="0 0 24 24"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg></button>
         <button id="btn-orbits" class="ctrl-btn active" title="Toggle Orbits"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3"/></svg></button>
         <button id="btn-labels" class="ctrl-btn active" title="Toggle Labels"><svg viewBox="0 0 24 24"><path d="M5 4v3h5.5v12h3V7H19V4z"/></svg></button>
         <button id="btn-sound" class="ctrl-btn" title="Toggle Sound"><svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg></button>
-        <div class="speed-control">
-            <span class="speed-label">SPEED</span>
-            <input type="range" id="speed" min="0" max="5" step="0.1" value="1">
-            <span id="speed-val">1.0x</span>
-        </div>
+        <div class="speed-control"><span class="speed-label">SPEED</span><input type="range" id="speed" min="0" max="5" step="0.1" value="1"><span id="speed-val">1.0x</span></div>
     </div>
     <div id="planet-popup" class="hidden">
         <div class="popup-header">
@@ -43,7 +36,7 @@
         <div class="popup-body">
             <div class="data-grid">
                 <div class="data-item"><span class="data-icon">🌍</span><div class="data-content"><span class="data-label">DIAMETER</span><span id="popup-diameter" class="data-value">-</span></div></div>
-                <div class="data-item"><span class="data-icon">📍</span><div class="data-content"><span class="data-label">DISTANCE FROM SUN</span><span id="popup-distance" class="data-value">-</span></div></div>
+                <div class="data-item"><span class="data-icon">📍</span><div class="data-content"><span class="data-label">DISTANCE</span><span id="popup-distance" class="data-value">-</span></div></div>
                 <div class="data-item"><span class="data-icon">⏱️</span><div class="data-content"><span class="data-label">ORBITAL PERIOD</span><span id="popup-period" class="data-value">-</span></div></div>
                 <div class="data-item"><span class="data-icon">🌡️</span><div class="data-content"><span class="data-label">TEMPERATURE</span><span id="popup-temp" class="data-value">-</span></div></div>
                 <div class="data-item"><span class="data-icon">🌙</span><div class="data-content"><span class="data-label">MOONS</span><span id="popup-moons" class="data-value">-</span></div></div>
@@ -57,12 +50,7 @@
         </div>
     </div>
     <div id="tooltip" class="hidden"></div>
-    <div id="loading">
-        <div class="loader"><div class="sun-loader"></div><div class="orbit-loader"></div><div class="orbit-loader o2"></div></div>
-        <h2>COSMOS EXPLORER</h2>
-        <p id="load-status">Initializing...</p>
-        <div class="load-bar"><div id="load-progress"></div></div>
-    </div>
+    <div id="loading"><div class="loader"><div class="sun-loader"></div><div class="orbit-loader"></div><div class="orbit-loader o2"></div></div><h2>COSMOS EXPLORER</h2><p id="load-status">Initializing...</p><div class="load-bar"><div id="load-progress"></div></div></div>
     <script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.160.0/examples/jsm/"}}</script>
     <script type="module" src="main.js"></script>
 </body>
