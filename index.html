@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive 3D Solar System</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Three.js canvas will be inserted here -->
+    <div id="canvas-container"></div>
+
+    <!-- UI Overlay -->
+    <div id="ui-overlay">
+        <div id="title">
+            <h1>Solar System</h1>
+            <p>Click on a planet to learn more</p>
+        </div>
+
+        <div id="controls">
+            <button id="play-pause-btn">
+                <span id="btn-icon">⏸</span>
+                <span id="btn-text">Pause</span>
+            </button>
+            <div id="speed-control">
+                <label for="speed-slider">Time Speed</label>
+                <input type="range" id="speed-slider" min="0.1" max="5" step="0.1" value="1">
+                <span id="speed-value">1.0x</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Planet Info Panel -->
+    <div id="info-panel" class="hidden">
+        <button id="close-panel">×</button>
+        <h2 id="planet-name">Planet Name</h2>
+        <div id="planet-stats">
+            <div class="stat">
+                <span class="stat-label">Distance from Sun</span>
+                <span id="planet-distance" class="stat-value">-</span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">Orbital Period</span>
+                <span id="planet-period" class="stat-value">-</span>
+            </div>
+        </div>
+        <p id="planet-fact" class="fact">-</p>
+    </div>
+
+    <!-- Loading Screen -->
+    <div id="loading">
+        <div class="loader"></div>
+        <p>Loading Solar System...</p>
+    </div>
+
+    <!-- Import Three.js and OrbitControls via ES modules -->
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+            "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+        }
+    }
+    </script>
+    <script type="module" src="main.js"></script>
+</body>
+</html>
