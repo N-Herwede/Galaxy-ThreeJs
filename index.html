@@ -3,57 +3,565 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive 3D Solar System</title>
+    <title>Cosmos Explorer | Interactive 3D Solar System</title>
+    
+    <!-- Google Fonts - Cinematic Space Theme -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;500;600;700&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Three.js canvas will be inserted here -->
+    <!-- Three.js canvas -->
     <div id="canvas-container"></div>
 
-    <!-- UI Overlay -->
-    <div id="ui-overlay">
-        <div id="title">
-            <h1>Solar System</h1>
-            <p>Click on a planet to learn more</p>
+    <!-- Cinematic letterbox bars -->
+    <div class="letterbox top"></div>
+    <div class="letterbox bottom"></div>
+
+    <!-- Scan lines overlay -->
+    <div class="scanlines"></div>
+
+    <!-- Corner decorations -->
+    <div class="corner-decor top-left"></div>
+    <div class="corner-decor top-right"></div>
+    <div class="corner-decor bottom-left"></div>
+    <div class="corner-decor bottom-right"></div>
+
+    <!-- Main Title -->
+    <header id="main-header">
+        <div class="header-content">
+            <div class="logo-section">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 100 100" width="40" height="40">
+                        <circle cx="50" cy="50" r="8" fill="#ffd700"/>
+                        <ellipse cx="50" cy="50" rx="25" ry="8" fill="none" stroke="#4fc3f7" stroke-width="1.5" opacity="0.8"/>
+                        <ellipse cx="50" cy="50" rx="40" ry="15" fill="none" stroke="#b388ff" stroke-width="1" opacity="0.5"/>
+                        <circle cx="75" cy="50" r="3" fill="#4fc3f7"/>
+                    </svg>
+                </div>
+                <div class="title-text">
+                    <h1>COSMOS EXPLORER</h1>
+                    <p class="subtitle">Interactive Solar System Simulation</p>
+                </div>
+            </div>
+            <div class="header-stats">
+                <div class="stat-item">
+                    <span class="stat-label">FPS</span>
+                    <span id="fps-counter" class="stat-value">60</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">TIME</span>
+                    <span id="sim-time" class="stat-value">00:00:00</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">OBJECTS</span>
+                    <span id="object-count" class="stat-value">0</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Quick Action Bar -->
+    <div id="quick-actions">
+        <button class="quick-btn" id="btn-reset-camera" title="Reset Camera">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                <path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/>
+            </svg>
+        </button>
+        <button class="quick-btn" id="btn-toggle-orbits" title="Toggle Orbits">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <circle cx="12" cy="12" r="6"/>
+                <circle cx="12" cy="12" r="2"/>
+            </svg>
+        </button>
+        <button class="quick-btn" id="btn-toggle-labels" title="Toggle Labels">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                <path d="M5 4v3h5.5v12h3V7H19V4z"/>
+            </svg>
+        </button>
+        <button class="quick-btn" id="btn-toggle-asteroids" title="Toggle Asteroids">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                <circle cx="8" cy="8" r="2"/>
+                <circle cx="16" cy="10" r="1.5"/>
+                <circle cx="12" cy="16" r="2.5"/>
+                <circle cx="6" cy="14" r="1"/>
+                <circle cx="18" cy="6" r="1"/>
+            </svg>
+        </button>
+        <button class="quick-btn" id="btn-screenshot" title="Screenshot">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                <path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/>
+            </svg>
+        </button>
+        <button class="quick-btn active" id="btn-play-pause" title="Play/Pause">
+            <svg id="icon-pause" viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+            </svg>
+            <svg id="icon-play" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" style="display:none;">
+                <path d="M8 5v14l11-7z"/>
+            </svg>
+        </button>
+    </div>
+
+    <!-- Control Panel Toggle -->
+    <button id="panel-toggle" class="panel-toggle">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+            <path d="M3 17v2h6v-2H3zM3 5v2h10V5H3zm10 16v-2h8v-2h-8v-2h-2v6h2zM7 9v2H3v2h4v2h2V9H7zm14 4v-2H11v2h10zm-6-4h2V7h4V5h-4V3h-2v6z"/>
+        </svg>
+        <span>Controls</span>
+    </button>
+
+    <!-- Advanced Control Panel -->
+    <aside id="control-panel" class="collapsed">
+        <div class="panel-header">
+            <h2>SIMULATION CONTROLS</h2>
+            <button id="panel-close" class="panel-close">×</button>
         </div>
 
-        <div id="controls">
-            <button id="play-pause-btn">
-                <span id="btn-icon">⏸</span>
-                <span id="btn-text">Pause</span>
-            </button>
-            <div id="speed-control">
-                <label for="speed-slider">Time Speed</label>
-                <input type="range" id="speed-slider" min="0.1" max="5" step="0.1" value="1">
-                <span id="speed-value">1.0x</span>
+        <div class="panel-content">
+            <!-- Time Controls -->
+            <section class="control-section">
+                <h3>
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                        <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
+                    </svg>
+                    Time Control
+                </h3>
+                <div class="control-group">
+                    <label>Simulation Speed</label>
+                    <div class="slider-container">
+                        <input type="range" id="speed-slider" min="0" max="10" step="0.1" value="1">
+                        <span id="speed-value" class="slider-value">1.0x</span>
+                    </div>
+                    <div class="preset-buttons">
+                        <button class="preset-btn" data-speed="0.1">0.1x</button>
+                        <button class="preset-btn" data-speed="0.5">0.5x</button>
+                        <button class="preset-btn active" data-speed="1">1x</button>
+                        <button class="preset-btn" data-speed="2">2x</button>
+                        <button class="preset-btn" data-speed="5">5x</button>
+                        <button class="preset-btn" data-speed="10">10x</button>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label>Reverse Time</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="reverse-time">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </section>
+
+            <!-- Camera Controls -->
+            <section class="control-section">
+                <h3>
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+                    </svg>
+                    Camera
+                </h3>
+                <div class="control-group">
+                    <label>Auto Rotate</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="auto-rotate">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="control-group">
+                    <label>Rotation Speed</label>
+                    <div class="slider-container">
+                        <input type="range" id="rotation-speed" min="0.1" max="2" step="0.1" value="0.5">
+                        <span id="rotation-value" class="slider-value">0.5</span>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label>Field of View</label>
+                    <div class="slider-container">
+                        <input type="range" id="fov-slider" min="30" max="120" step="5" value="60">
+                        <span id="fov-value" class="slider-value">60°</span>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label>Focus Target</label>
+                    <select id="camera-target">
+                        <option value="free">Free Camera</option>
+                        <option value="sun">Sun</option>
+                        <option value="mercury">Mercury</option>
+                        <option value="venus">Venus</option>
+                        <option value="earth">Earth</option>
+                        <option value="mars">Mars</option>
+                        <option value="jupiter">Jupiter</option>
+                        <option value="saturn">Saturn</option>
+                        <option value="uranus">Uranus</option>
+                        <option value="neptune">Neptune</option>
+                    </select>
+                </div>
+            </section>
+
+            <!-- Visual Settings -->
+            <section class="control-section">
+                <h3>
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                        <path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-.99 0-.83.67-1.5 1.5-1.5H16c2.76 0 5-2.24 5-5 0-4.42-4.03-8-9-8zm-5.5 9c-.83 0-1.5-.67-1.5-1.5S5.67 9 6.5 9 8 9.67 8 10.5 7.33 12 6.5 12zm3-4C8.67 8 8 7.33 8 6.5S8.67 5 9.5 5s1.5.67 1.5 1.5S10.33 8 9.5 8zm5 0c-.83 0-1.5-.67-1.5-1.5S13.67 5 14.5 5s1.5.67 1.5 1.5S15.33 8 14.5 8zm3 4c-.83 0-1.5-.67-1.5-1.5S16.67 9 17.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>
+                    </svg>
+                    Visuals
+                </h3>
+                <div class="control-group">
+                    <label>Show Orbits</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="show-orbits" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="control-group">
+                    <label>Show Labels</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="show-labels" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="control-group">
+                    <label>Show Asteroid Belt</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="show-asteroids" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="control-group">
+                    <label>Show Kuiper Belt</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="show-kuiper" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="control-group">
+                    <label>Show Stars</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="show-stars" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="control-group">
+                    <label>Show Galaxy</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="show-galaxy" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="control-group">
+                    <label>Show Nebulae</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="show-nebulae" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </section>
+
+            <!-- Sun Settings -->
+            <section class="control-section">
+                <h3>
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                        <path d="M6.76 4.84l-1.8-1.79-1.41 1.41 1.79 1.79 1.42-1.41zM4 10.5H1v2h3v-2zm9-9.95h-2V3.5h2V.55zm7.45 3.91l-1.41-1.41-1.79 1.79 1.41 1.41 1.79-1.79zm-3.21 13.7l1.79 1.8 1.41-1.41-1.8-1.79-1.4 1.4zM20 10.5v2h3v-2h-3zm-8-5c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm-1 16.95h2V19.5h-2v2.95zm-7.45-3.91l1.41 1.41 1.79-1.8-1.41-1.41-1.79 1.8z"/>
+                    </svg>
+                    Sun Effects
+                </h3>
+                <div class="control-group">
+                    <label>Corona Intensity</label>
+                    <div class="slider-container">
+                        <input type="range" id="corona-intensity" min="0" max="2" step="0.1" value="1">
+                        <span id="corona-value" class="slider-value">1.0</span>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label>Flare Intensity</label>
+                    <div class="slider-container">
+                        <input type="range" id="flare-intensity" min="0" max="2" step="0.1" value="1">
+                        <span id="flare-value" class="slider-value">1.0</span>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label>Light Intensity</label>
+                    <div class="slider-container">
+                        <input type="range" id="sun-light" min="0.5" max="5" step="0.1" value="2.5">
+                        <span id="light-value" class="slider-value">2.5</span>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label>Solar Prominences</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="show-prominences" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </section>
+
+            <!-- Planet Scale -->
+            <section class="control-section">
+                <h3>
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93z"/>
+                    </svg>
+                    Scale & Size
+                </h3>
+                <div class="control-group">
+                    <label>Planet Scale</label>
+                    <div class="slider-container">
+                        <input type="range" id="planet-scale" min="0.5" max="3" step="0.1" value="1">
+                        <span id="scale-value" class="slider-value">1.0x</span>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label>Orbit Scale</label>
+                    <div class="slider-container">
+                        <input type="range" id="orbit-scale" min="0.5" max="2" step="0.1" value="1">
+                        <span id="orbit-scale-value" class="slider-value">1.0x</span>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label>Realistic Proportions</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="realistic-scale">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </section>
+
+            <!-- Atmosphere & Effects -->
+            <section class="control-section">
+                <h3>
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                        <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z"/>
+                    </svg>
+                    Atmosphere & Glow
+                </h3>
+                <div class="control-group">
+                    <label>Atmosphere Intensity</label>
+                    <div class="slider-container">
+                        <input type="range" id="atmosphere-intensity" min="0" max="2" step="0.1" value="1">
+                        <span id="atmo-value" class="slider-value">1.0</span>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label>Bloom Effect</label>
+                    <div class="slider-container">
+                        <input type="range" id="bloom-intensity" min="0" max="2" step="0.1" value="0.5">
+                        <span id="bloom-value" class="slider-value">0.5</span>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label>Shadow Quality</label>
+                    <select id="shadow-quality">
+                        <option value="off">Off</option>
+                        <option value="low">Low</option>
+                        <option value="medium" selected>Medium</option>
+                        <option value="high">High</option>
+                    </select>
+                </div>
+            </section>
+
+            <!-- Asteroid Settings -->
+            <section class="control-section">
+                <h3>
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                        <circle cx="8" cy="8" r="3"/>
+                        <circle cx="16" cy="10" r="2"/>
+                        <circle cx="12" cy="16" r="4"/>
+                        <circle cx="5" cy="15" r="1.5"/>
+                    </svg>
+                    Asteroids
+                </h3>
+                <div class="control-group">
+                    <label>Belt Density</label>
+                    <div class="slider-container">
+                        <input type="range" id="asteroid-density" min="100" max="2000" step="100" value="800">
+                        <span id="density-value" class="slider-value">800</span>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label>Asteroid Size</label>
+                    <div class="slider-container">
+                        <input type="range" id="asteroid-size" min="0.1" max="1" step="0.1" value="0.3">
+                        <span id="ast-size-value" class="slider-value">0.3</span>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label>Animate Asteroids</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="animate-asteroids" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </section>
+
+            <!-- Post Processing -->
+            <section class="control-section">
+                <h3>
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zm-7-2h2v-4h4v-2h-4V7h-2v4H8v2h4z"/>
+                    </svg>
+                    Post Processing
+                </h3>
+                <div class="control-group">
+                    <label>Film Grain</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="film-grain">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="control-group">
+                    <label>Vignette</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="vignette" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="control-group">
+                    <label>Chromatic Aberration</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="chromatic">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="control-group">
+                    <label>Exposure</label>
+                    <div class="slider-container">
+                        <input type="range" id="exposure" min="0.5" max="2" step="0.1" value="1.2">
+                        <span id="exposure-value" class="slider-value">1.2</span>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </aside>
+
+    <!-- Planet Info Panel -->
+    <div id="info-panel" class="hidden">
+        <div class="info-header">
+            <div class="planet-icon" id="planet-icon"></div>
+            <div class="planet-title">
+                <h2 id="planet-name">Planet Name</h2>
+                <span id="planet-type" class="planet-type">Rocky Planet</span>
+            </div>
+            <button id="close-panel" class="close-btn">×</button>
+        </div>
+        
+        <div class="info-content">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">📏</div>
+                    <div class="stat-info">
+                        <span class="stat-label">Distance from Sun</span>
+                        <span id="planet-distance" class="stat-value">-</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">⏱️</div>
+                    <div class="stat-info">
+                        <span class="stat-label">Orbital Period</span>
+                        <span id="planet-period" class="stat-value">-</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🌡️</div>
+                    <div class="stat-info">
+                        <span class="stat-label">Surface Temp</span>
+                        <span id="planet-temp" class="stat-value">-</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">⚖️</div>
+                    <div class="stat-info">
+                        <span class="stat-label">Gravity</span>
+                        <span id="planet-gravity" class="stat-value">-</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🌙</div>
+                    <div class="stat-info">
+                        <span class="stat-label">Moons</span>
+                        <span id="planet-moons" class="stat-value">-</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📐</div>
+                    <div class="stat-info">
+                        <span class="stat-label">Diameter</span>
+                        <span id="planet-diameter" class="stat-value">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="composition-section">
+                <h4>Composition</h4>
+                <div id="composition-bars" class="composition-bars"></div>
+            </div>
+
+            <div class="fact-section">
+                <h4>Did You Know?</h4>
+                <p id="planet-fact" class="fact-text">-</p>
+            </div>
+
+            <div class="action-buttons">
+                <button id="btn-focus-planet" class="action-btn primary">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                        <path d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3c-.46-4.17-3.77-7.48-7.94-7.94V1h-2v2.06C6.83 3.52 3.52 6.83 3.06 11H1v2h2.06c.46 4.17 3.77 7.48 7.94 7.94V23h2v-2.06c4.17-.46 7.48-3.77 7.94-7.94H23v-2h-2.06zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/>
+                    </svg>
+                    Focus Camera
+                </button>
+                <button id="btn-follow-planet" class="action-btn">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-5.5-2.5l7.51-3.49L17.5 6.5 9.99 9.99 6.5 17.5zm5.5-6.6c.61 0 1.1.49 1.1 1.1s-.49 1.1-1.1 1.1-1.1-.49-1.1-1.1.49-1.1 1.1-1.1z"/>
+                    </svg>
+                    Follow
+                </button>
             </div>
         </div>
     </div>
 
-    <!-- Planet Info Panel -->
-    <div id="info-panel" class="hidden">
-        <button id="close-panel">×</button>
-        <h2 id="planet-name">Planet Name</h2>
-        <div id="planet-stats">
-            <div class="stat">
-                <span class="stat-label">Distance from Sun</span>
-                <span id="planet-distance" class="stat-value">-</span>
-            </div>
-            <div class="stat">
-                <span class="stat-label">Orbital Period</span>
-                <span id="planet-period" class="stat-value">-</span>
-            </div>
-        </div>
-        <p id="planet-fact" class="fact">-</p>
+    <!-- Tooltip -->
+    <div id="tooltip" class="hidden">
+        <span id="tooltip-text"></span>
     </div>
 
     <!-- Loading Screen -->
     <div id="loading">
-        <div class="loader"></div>
-        <p>Loading Solar System...</p>
+        <div class="loading-content">
+            <div class="loader-ring">
+                <div class="ring"></div>
+                <div class="ring"></div>
+                <div class="ring"></div>
+                <div class="planet-loader"></div>
+            </div>
+            <h2>COSMOS EXPLORER</h2>
+            <p class="loading-text">Initializing Solar System...</p>
+            <div class="loading-bar">
+                <div class="loading-progress" id="loading-progress"></div>
+            </div>
+            <p class="loading-status" id="loading-status">Loading textures...</p>
+        </div>
     </div>
 
-    <!-- Import Three.js and OrbitControls via ES modules -->
+    <!-- Keyboard shortcuts help -->
+    <div id="shortcuts-help" class="hidden">
+        <h3>Keyboard Shortcuts</h3>
+        <ul>
+            <li><kbd>Space</kbd> Play/Pause</li>
+            <li><kbd>R</kbd> Reset Camera</li>
+            <li><kbd>O</kbd> Toggle Orbits</li>
+            <li><kbd>L</kbd> Toggle Labels</li>
+            <li><kbd>A</kbd> Toggle Asteroids</li>
+            <li><kbd>G</kbd> Toggle Galaxy</li>
+            <li><kbd>F</kbd> Fullscreen</li>
+            <li><kbd>S</kbd> Screenshot</li>
+            <li><kbd>1-8</kbd> Focus Planet</li>
+            <li><kbd>0</kbd> Focus Sun</li>
+            <li><kbd>Esc</kbd> Free Camera</li>
+            <li><kbd>?</kbd> Toggle Help</li>
+        </ul>
+    </div>
+
+    <!-- Import Three.js -->
     <script type="importmap">
     {
         "imports": {
