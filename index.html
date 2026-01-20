@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>COSMOS EXPLORER | 3D Solar System</title>
+    <title>COSMOS EXPLORER | Ultimate 3D Solar System</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -11,6 +11,7 @@
 </head>
 <body>
     <div id="canvas-container"></div>
+    
     <header id="header">
         <h1>COSMOS EXPLORER</h1>
         <div class="stats">
@@ -18,20 +19,42 @@
             <div class="stat"><span class="label">TIME</span><span id="time">00:00</span></div>
         </div>
     </header>
+    
     <div id="controls">
-        <button id="btn-play" class="ctrl-btn active" title="Play/Pause"><svg id="icon-pause" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg><svg id="icon-play" viewBox="0 0 24 24" style="display:none"><path d="M8 5v14l11-7z"/></svg></button>
-        <button id="btn-reset" class="ctrl-btn" title="Reset Camera"><svg viewBox="0 0 24 24"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg></button>
-        <button id="btn-orbits" class="ctrl-btn active" title="Toggle Orbits"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3"/></svg></button>
-        <button id="btn-labels" class="ctrl-btn active" title="Toggle Labels"><svg viewBox="0 0 24 24"><path d="M5 4v3h5.5v12h3V7H19V4z"/></svg></button>
-        <button id="btn-sound" class="ctrl-btn" title="Toggle Sound"><svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg></button>
-        <div class="speed-control"><span class="speed-label">SPEED</span><input type="range" id="speed" min="0" max="5" step="0.1" value="1"><span id="speed-val">1.0x</span></div>
+        <button id="btn-play" class="ctrl-btn active" title="Play/Pause (Space)">
+            <svg id="icon-pause" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+            <svg id="icon-play" viewBox="0 0 24 24" style="display:none"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+        <button id="btn-reset" class="ctrl-btn" title="Reset Camera (R)">
+            <svg viewBox="0 0 24 24"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg>
+        </button>
+        <button id="btn-orbits" class="ctrl-btn active" title="Toggle Orbits (O)">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3"/></svg>
+        </button>
+        <button id="btn-labels" class="ctrl-btn active" title="Toggle Labels (L)">
+            <svg viewBox="0 0 24 24"><path d="M5 4v3h5.5v12h3V7H19V4z"/></svg>
+        </button>
+        <button id="btn-sound" class="ctrl-btn" title="Toggle Sound (M)">
+            <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
+        </button>
+        <div class="speed-control">
+            <span class="speed-label">SPEED</span>
+            <input type="range" id="speed" min="0" max="5" step="0.1" value="1">
+            <span id="speed-val">1.0x</span>
+        </div>
     </div>
+    
     <div id="planet-popup" class="hidden">
         <div class="popup-header">
             <div class="planet-visual" id="popup-visual"></div>
-            <div class="planet-title"><h2 id="popup-name">Planet</h2><span id="popup-type">Type</span></div>
+            <div class="planet-title">
+                <h2 id="popup-name">Planet</h2>
+                <span id="popup-type">Type</span>
+            </div>
+            <button id="popup-speak" title="Read Aloud">
+                <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
+            </button>
             <button id="popup-close">×</button>
-            <button id="popup-speak" title="Read Aloud"><svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg></button>
         </div>
         <div class="popup-body">
             <div class="data-grid">
@@ -42,16 +65,44 @@
                 <div class="data-item"><span class="data-icon">🌙</span><div class="data-content"><span class="data-label">MOONS</span><span id="popup-moons" class="data-value">-</span></div></div>
                 <div class="data-item"><span class="data-icon">⚖️</span><div class="data-content"><span class="data-label">GRAVITY</span><span id="popup-gravity" class="data-value">-</span></div></div>
             </div>
-            <div class="fact-box"><h4>DID YOU KNOW?</h4><p id="popup-fact">-</p></div>
+            <div class="fact-box">
+                <h4>DID YOU KNOW?</h4>
+                <p id="popup-fact">-</p>
+            </div>
             <div class="popup-actions">
-                <button id="popup-focus" class="action-btn"><svg viewBox="0 0 24 24"><path d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3c-.46-4.17-3.77-7.48-7.94-7.94V1h-2v2.06C6.83 3.52 3.52 6.83 3.06 11H1v2h2.06c.46 4.17 3.77 7.48 7.94 7.94V23h2v-2.06c4.17-.46 7.48-3.77 7.94-7.94H23v-2h-2.06z"/></svg>FOCUS</button>
-                <button id="popup-follow" class="action-btn"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93z"/></svg>FOLLOW</button>
+                <button id="popup-focus" class="action-btn">
+                    <svg viewBox="0 0 24 24"><path d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3c-.46-4.17-3.77-7.48-7.94-7.94V1h-2v2.06C6.83 3.52 3.52 6.83 3.06 11H1v2h2.06c.46 4.17 3.77 7.48 7.94 7.94V23h2v-2.06c4.17-.46 7.48-3.77 7.94-7.94H23v-2h-2.06z"/></svg>
+                    FOCUS
+                </button>
+                <button id="popup-follow" class="action-btn">
+                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93z"/></svg>
+                    FOLLOW
+                </button>
             </div>
         </div>
     </div>
+    
     <div id="tooltip" class="hidden"></div>
-    <div id="loading"><div class="loader"><div class="sun-loader"></div><div class="orbit-loader"></div><div class="orbit-loader o2"></div></div><h2>COSMOS EXPLORER</h2><p id="load-status">Initializing...</p><div class="load-bar"><div id="load-progress"></div></div></div>
-    <script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.160.0/examples/jsm/"}}</script>
+    
+    <div id="loading">
+        <div class="loader">
+            <div class="sun-loader"></div>
+            <div class="orbit-loader"></div>
+            <div class="orbit-loader o2"></div>
+        </div>
+        <h2>COSMOS EXPLORER</h2>
+        <p id="load-status">Initializing...</p>
+        <div class="load-bar"><div id="load-progress"></div></div>
+    </div>
+    
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+            "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+        }
+    }
+    </script>
     <script type="module" src="main.js"></script>
 </body>
 </html>
