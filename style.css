@@ -25,9 +25,9 @@
     --text-secondary: rgba(255, 255, 255, 0.7);
     --text-muted: rgba(255, 255, 255, 0.4);
     
-    --font-display: 'Rajdhani', sans-serif;
-    --font-body: 'Exo 2', sans-serif;
-    --font-mono: 'Share Tech Mono', monospace;
+    --font-display: 'Orbitron', sans-serif;
+    --font-body: 'Orbitron', sans-serif;
+    --font-mono: 'Audiowide', monospace;
     
     --shadow-glow: 0 0 30px rgba(0, 212, 255, 0.3);
     --shadow-panel: 0 25px 80px rgba(0, 0, 0, 0.6);
