@@ -1,7 +1,7 @@
 # Interactive 3D Solar System
 
 An interactive, animated 3D solar system built with Three.js. Explore the planets, learn interesting facts, and control the simulation speed.
-
+https://n-herwede.github.io/Galaxy-ThreeJs/
 ![Solar System Preview](preview.png)
 
 ## Features
