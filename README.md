@@ -124,6 +124,4 @@ All planets include:
 
 Created with Three.js. Planet data sourced from NASA.
 
-## License
 
-MIT License - Feel free to use, modify, and distribute.
